@@ -16,6 +16,14 @@ Python's standard function calls are **synchronous** and **blocking**, executing
 - **Easy Result Access**: Results are assigned to global variables with the same name as the task key if the `create_variables` parameter is enabled.
 - **Supports Any Callable**: Works with any callable (function, lambda, etc.), allowing for flexible function management.
 
+
+## Installation
+
+To install `functionmonitor`, simply use pip:
+
+```bash
+pip install functionmonitor
+
 ## Usage Overview
 
 1. **Basic Structure**  
@@ -24,8 +32,7 @@ Python's standard function calls are **synchronous** and **blocking**, executing
 2. **Using Callables**  
    Any callable can be assigned to `functionmonitor`, allowing functions, lambda expressions, and more to run asynchronously. Prefixing the callable with `lambda` prevents immediate execution, enabling background processing.
 
+```python
+import functionmonitor
+fm = functionmonitor.get_fm(create_variables=True)
 
-
----
-
-This setup lets you add tasks asynchronously with minimal effort, simplifying concurrent execution and real-time progress tracking in Python projects.

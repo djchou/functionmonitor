@@ -23,6 +23,7 @@ To install `functionmonitor`, simply use pip:
 
 ```bash
 pip install functionmonitor
+```
 
 ## Usage Overview
 
@@ -35,4 +36,5 @@ pip install functionmonitor
 ```python
 import functionmonitor
 fm = functionmonitor.get_fm(create_variables=True)
-
+fm[{var}] = lambda: {func()}
+```

@@ -4,7 +4,7 @@
 
 Python's standard function calls are **synchronous** and **blocking**, executing each function sequentially and waiting for each to complete before moving on. This design can be a limitation, especially with I/O-bound or long-running operations.
 
-**`functionmonitor`** offers a streamlined approach to **asynchronous execution** by running functions in separate threads. This allows for:
+**`functionmonitor`** is designed specifically for use in **Jupyter notebooks** to enable easy, asynchronous function execution. By running functions in separate threads, you can manage multiple tasks concurrently within the interactive Jupyter environment, allowing for:
 
 - **Concurrent function execution**, freeing up the main thread to continue processing other tasks.
 - **Real-time monitoring** of each function's progress.

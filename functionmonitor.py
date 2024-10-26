@@ -5,7 +5,7 @@ import IPython.display
 import IPython
 import time
 import logging
-import inspect  # Import inspect to access caller's globals
+import inspect 
 import keyword
 import builtins
 
@@ -48,35 +48,30 @@ class DisplayFunctionThread(BaseThread):
             time.sleep(self._refresh_rate)
 
 class FunctionMonitor:
-    def __init__(self, create_variables=False):
+    def __init__(self, create_variables=False, caller_globals=None, logging_level=logging.INFO):
         self.futures = {}
         self._results_lock = threading.Lock()
         self.pool = concurrent.futures.ThreadPoolExecutor()
-        self.futures_monitor = None
+        self.function_monitor = None
         self.create_variables = create_variables
+        # Store the caller's globals for variable assignment
+        self.caller_globals = caller_globals or globals()
+        
+        # Configure the logger with the provided logging level
+        self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(logging_level)
+        
+        # Optional: Add a stream handler if no handlers exist
+        if not self.logger.hasHandlers():
+            handler = logging.StreamHandler()
+            handler.setLevel(logging_level)
+            formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+            handler.setFormatter(formatter)
+            self.logger.addHandler(handler)
+
         self.start()
 
-    def start(self):
-        """Start monitoring the futures and updating the display."""
-        output_cell = IPython.display.display(IPython.display.Markdown(""), display_id=True)
-        output_cell_id = output_cell.display_id
-        self.futures_monitor = DisplayFunctionThread(
-            name='display_futures_status',
-            input_function=self.display_futures_status,
-            function_params={'futures': self.futures},
-            display_id=output_cell_id,
-            refresh_rate=1
-        )
-        self.futures_monitor.start()
-
-    def stop(self):
-        """Stop the futures monitor thread and shutdown the executor."""
-        if self.futures_monitor:
-            self.futures_monitor.stop()
-        self.pool.shutdown(wait=False)
-        logger.info("FuturesMonitor stopped.")
-
-    def display_futures_status(self, futures):
+    def display_function_status(self, futures):
         """Generate an HTML table showing the futures status."""
         rows = ['<tr><th>Function</th><th>Status</th></tr>']
         for key, future in futures.items():
@@ -92,6 +87,26 @@ class FunctionMonitor:
         table = f"<table>{''.join(rows)}</table>"
         return IPython.display.Markdown(table)
 
+    def start(self):
+        """Start monitoring the futures and updating the display."""
+        output_cell = IPython.display.display(IPython.display.Markdown(""), display_id=True)
+        output_cell_id = output_cell.display_id
+        self.function_monitor = DisplayFunctionThread(
+            name='display_function_status',
+            input_function=self.display_function_status,
+            function_params={'futures': self.futures},
+            display_id=output_cell_id,
+            refresh_rate=1
+        )
+        self.function_monitor.start()
+
+    def stop(self):
+        """Stop the futures monitor thread and shutdown the executor."""
+        if self.function_monitor:
+            self.function_monitor.stop()
+        self.pool.shutdown(wait=False)
+        self.logger.info("FunctionMonitor stopped.")
+
     def __getitem__(self, key):
         """Get the result of a future, blocking until it completes."""
         return self.futures[key].result()
@@ -99,42 +114,44 @@ class FunctionMonitor:
     def __setitem__(self, key, func):
         if not callable(func):
             raise ValueError("Value must be a callable function.")
-        # Capture the caller's global namespace
-        caller_globals = inspect.currentframe().f_back.f_globals
         future = self.pool.submit(func)
         if self.create_variables:
             # Pass the caller_globals to the callback
-            future.add_done_callback(lambda f, k=key, g=caller_globals: self._assign_variable(k, f, g))
+            future.add_done_callback(lambda f, k=key: self._assign_variable(k, f))
         self.futures[key] = future
-        logger.info(f"Future '{key}' added.")
+        self.logger.info(f"Future '{key}' added.")
 
-    def _assign_variable(self, key, future, caller_globals):
+    def _assign_variable(self, key, future):
         """Assign the result to a variable in the caller's global namespace."""
         with self._results_lock:
             try:
                 result = future.result()
-                # Check for invalid variable names
-                if not key.isidentifier():
-                    logger.error(f"Cannot assign to '{key}': invalid identifier.")
-                    return
+                # Check if key is a Python keyword
                 if keyword.iskeyword(key):
-                    logger.error(f"Cannot assign to '{key}': it is a Python keyword.")
+                    self.logger.error(f"Cannot assign to '{key}': it is a Python keyword.")
                     return
+                # Check if key is a built-in name
                 if key in vars(builtins):
-                    logger.error(f"Cannot assign to '{key}': it is a built-in name.")
+                    self.logger.error(f"Cannot assign to '{key}': it is a built-in name.")
                     return
-                if key in caller_globals:
-                    logger.warning(f"Variable '{key}' already exists in the global namespace. It will be overwritten.")
-                caller_globals[key] = result
-                logger.info(f"Variable '{key}' assigned with result.")
+                # Use the caller's globals for assignment
+                if key in self.caller_globals:
+                    self.logger.warning(f"Variable '{key}' already exists in the caller's global namespace. It will be overwritten.")
+                self.caller_globals[key] = result
+                self.logger.info(f"Variable '{key}' assigned with result.")
             except Exception as e:
-                logger.error(f"Error in future '{key}': {e}")
-                caller_globals[key] = e
+                self.logger.error(f"Error in future '{key}': {e}")
+                # Assign the exception to indicate failure
+                self.caller_globals[key] = e
 
-def get_fm(create_variables=False):
+def get_fm(create_variables=False, logging_level=logging.ERROR):
+    # Capture the caller's global namespace by going back one more frame
+    caller_globals = inspect.currentframe().f_back.f_globals
     global fm
+
+    # Use the caller's globals for assigning variables if fm is created
     if 'fm' not in globals():
-        fm = FunctionMonitor(create_variables=create_variables)
+        fm = FunctionMonitor(create_variables=create_variables, caller_globals=caller_globals, logging_level=logging_level)
     else:
         fm.start()
     return fm

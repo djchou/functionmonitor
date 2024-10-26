@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="functionmonitor",                     # The package name
-    version="0.1.2",                            # Initial version number
+    version="0.1.3",                            # Initial version number
     description="A tool for monitoring and managing asynchronous function execution.",
     author="Dennis Chou",                         # Your name
     author_email="dennischou@gmail.com",      # Your email

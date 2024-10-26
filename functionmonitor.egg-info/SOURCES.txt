@@ -1,0 +1,8 @@
+LICENSE
+README.md
+setup.py
+functionmonitor.egg-info/PKG-INFO
+functionmonitor.egg-info/SOURCES.txt
+functionmonitor.egg-info/dependency_links.txt
+functionmonitor.egg-info/requires.txt
+functionmonitor.egg-info/top_level.txt

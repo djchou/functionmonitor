@@ -1,19 +1,31 @@
 # functionmonitor
 
-Python’s standard behavior for function calls is **synchronous** and **blocking**, meaning that each function runs in sequence, waiting for one to finish before starting the next. This can limit efficiency, especially for I/O-bound tasks or long-running operations.
+![Demo](demo.gif)
 
-**`functionmonitor`** provides an easy way to **run functions asynchronously in separate threads**, allowing Python programs to execute multiple functions in a **non-blocking** manner. With `functionmonitor`, you can:
+Python's standard function calls are **synchronous** and **blocking**, executing each function sequentially and waiting for each to complete before moving on. This design can be a limitation, especially with I/O-bound or long-running operations.
 
-- **Execute functions concurrently** in separate threads, freeing up the main program flow.
-- **Monitor the progress** of each function’s execution in real-time.
-- **Automatically assign results** to variables in the global namespace upon completion, making it easy to access results as soon as they’re available.
+**`functionmonitor`** offers a streamlined approach to **asynchronous execution** by running functions in separate threads. This allows for:
 
-## How It Works
+- **Concurrent function execution**, freeing up the main thread to continue processing other tasks.
+- **Real-time monitoring** of each function's progress.
+- **Automatic result assignment** to variables in the global namespace for easy access as soon as functions complete.
 
-`functionmonitor` functions similarly to a dictionary: it stores each task with a **variable name as the key** and **the result as the value**. As tasks complete, you can access their results directly through `functionmonitor` as you would with a dictionary:
+## Key Features
 
-```python
-# Accessing a result by key
-result = fm['task_name']
+- **Execute Functions Concurrently**: Run functions in separate threads, improving efficiency by enabling asynchronous execution.
+- **Easy Result Access**: Results are assigned to global variables with the same name as the task key if the `create_variables` parameter is enabled.
+- **Supports Any Callable**: Works with any callable (function, lambda, etc.), allowing for flexible function management.
 
-alternatively, once the function is finished, functionmonitor can automatically create the variable with the results if the create_variables parameter is set to True
+## Usage Overview
+
+1. **Basic Structure**  
+   `functionmonitor` behaves similarly to a dictionary, where each task is stored with a task name as the key and the result as the value. Once a task completes, its result is directly accessible.
+
+2. **Using Callables**  
+   Any callable can be assigned to `functionmonitor`, allowing functions, lambda expressions, and more to run asynchronously. Prefixing the callable with `lambda` prevents immediate execution, enabling background processing.
+
+
+
+---
+
+This setup lets you add tasks asynchronously with minimal effort, simplifying concurrent execution and real-time progress tracking in Python projects.

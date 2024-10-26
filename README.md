@@ -8,4 +8,12 @@ Python’s standard behavior for function calls is **synchronous** and **blockin
 - **Monitor the progress** of each function’s execution in real-time.
 - **Automatically assign results** to variables in the global namespace upon completion, making it easy to access results as soon as they’re available.
 
-This tool is ideal for use cases where functions need to run independently without blocking other parts of your application.
+## How It Works
+
+`functionmonitor` functions similarly to a dictionary: it stores each task with a **variable name as the key** and **the result as the value**. As tasks complete, you can access their results directly through `functionmonitor` as you would with a dictionary:
+
+```python
+# Accessing a result by key
+result = fm['task_name']
+
+alternatively, once the function is finished, functionmonitor can automatically create the variable with the results if the create_variables parameter is set to True

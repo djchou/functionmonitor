@@ -1,6 +1,8 @@
 LICENSE
 README.md
 setup.py
+functionmonitor/__init__.py
+functionmonitor/core.py
 functionmonitor.egg-info/PKG-INFO
 functionmonitor.egg-info/SOURCES.txt
 functionmonitor.egg-info/dependency_links.txt

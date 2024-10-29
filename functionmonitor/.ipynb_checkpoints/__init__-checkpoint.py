@@ -1,5 +1,5 @@
 # functionmonitor/__init__.py
 from .core import FunctionMonitor, get_fm
 
-__version__ = "0.1.1"
+__version__ = "0.1.5"
 __author__ = "Dennis Chou"

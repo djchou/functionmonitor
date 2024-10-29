@@ -1,17 +1,3 @@
-Metadata-Version: 2.1
-Name: functionmonitor
-Version: 0.1.4
-Summary: A tool for monitoring and managing asynchronous function execution.
-Home-page: https://github.com/djchou/functionmonitor
-Author: Dennis Chou
-Author-email: dennischou@gmail.com
-Classifier: Programming Language :: Python :: 3
-Classifier: License :: OSI Approved :: MIT License
-Classifier: Operating System :: OS Independent
-Requires-Python: >=3.6
-Description-Content-Type: text/markdown
-License-File: LICENSE
-
 # functionmonitor
 
 ![Demo](demo.gif)
@@ -30,6 +16,15 @@ Python's standard function calls are **synchronous** and **blocking**, executing
 - **Easy Result Access**: Results are assigned to global variables with the same name as the task key if the `create_variables` parameter is enabled.
 - **Supports Any Callable**: Works with any callable (function, lambda, etc.), allowing for flexible function management.
 
+
+## Installation
+
+To install `functionmonitor`, simply use pip:
+
+```bash
+pip install functionmonitor
+```
+
 ## Usage Overview
 
 1. **Basic Structure**  
@@ -38,8 +33,8 @@ Python's standard function calls are **synchronous** and **blocking**, executing
 2. **Using Callables**  
    Any callable can be assigned to `functionmonitor`, allowing functions, lambda expressions, and more to run asynchronously. Prefixing the callable with `lambda` prevents immediate execution, enabling background processing.
 
-
-
----
-
-This setup lets you add tasks asynchronously with minimal effort, simplifying concurrent execution and real-time progress tracking in Python projects.
+```python
+import functionmonitor
+fm = functionmonitor.get_fm(create_variables=True)
+fm[{var}] = lambda: {func()}
+```

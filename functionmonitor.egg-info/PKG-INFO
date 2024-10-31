@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: functionmonitor
-Version: 0.1.5
+Version: 0.1.6
 Summary: A tool for monitoring and managing asynchronous function execution.
 Home-page: https://github.com/djchou/functionmonitor
 Author: Dennis Chou
@@ -11,7 +11,6 @@ Classifier: Operating System :: OS Independent
 Requires-Python: >=3.6
 Description-Content-Type: text/markdown
 License-File: LICENSE
-Requires-Dist: IPython
 
 # functionmonitor
 

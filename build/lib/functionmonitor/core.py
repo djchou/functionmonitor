@@ -71,30 +71,30 @@ class FunctionMonitor:
 
         self.start()
 
-     def reset(self):
-            """Reset the FunctionMonitor by stopping all active threads, shutting down the executor,
-            and clearing futures."""
-            
-            # Stop the monitoring display thread
-            if self.function_monitor:
-                self.function_monitor.stop()
-                self.function_monitor = None  # Clear the reference
-            
-            # Stop and clear any active threads in BaseThread.threads
-            for thread in list(BaseThread.threads):  # Copy to avoid modification during iteration
-                thread.stop()
-            
-            # Shutdown and restart the ThreadPoolExecutor
-            self.pool.shutdown(wait=False)
-            self.pool = concurrent.futures.ThreadPoolExecutor()
-            
-            # Clear the futures dictionary
-            self.futures.clear()
-            
-            # Restart the monitoring display
-            self.start()
-            
-            self.logger.info("FunctionMonitor reset and ready for new tasks.")
+    def reset(self):
+        """Reset the FunctionMonitor by stopping all active threads, shutting down the executor,
+        and clearing futures."""
+        
+        # Stop the monitoring display thread
+        if self.function_monitor:
+            self.function_monitor.stop()
+            self.function_monitor = None  # Clear the reference
+        
+        # Stop and clear any active threads in BaseThread.threads
+        for thread in list(BaseThread.threads):  # Copy to avoid modification during iteration
+            thread.stop()
+        
+        # Shutdown and restart the ThreadPoolExecutor
+        self.pool.shutdown(wait=False)
+        self.pool = concurrent.futures.ThreadPoolExecutor()
+        
+        # Clear the futures dictionary
+        self.futures.clear()
+        
+        # Restart the monitoring display
+        self.start()
+        
+        self.logger.info("FunctionMonitor reset and ready for new tasks.")
     
     def display_function_status(self, futures):
         """Generate an HTML table showing the futures status."""

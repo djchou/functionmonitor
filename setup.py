@@ -7,7 +7,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="functionmonitor",                     # The package name
-    version="0.1.5",                            # Initial version number
+    version="0.1.7",                            # Initial version number
     description="A tool for monitoring and managing asynchronous function execution.",
     long_description=long_description,          # Use the README as the long description
     long_description_content_type="text/markdown",  # Specify Markdown format for PyPI

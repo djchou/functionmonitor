@@ -48,7 +48,7 @@ class DisplayFunctionThread(BaseThread):
             time.sleep(self._refresh_rate)
 
 class FunctionMonitor:
-    def __init__(self, create_variables=False, caller_globals=None, logging_level=logging.INFO):
+    def __init__(self, create_variables=False, caller_globals=None, logging_level=logging.ERROR):
         self.futures = {}
         self._results_lock = threading.Lock()
         self.pool = concurrent.futures.ThreadPoolExecutor()
